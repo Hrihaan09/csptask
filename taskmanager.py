@@ -95,4 +95,4 @@ def main():
             print("Invalid choice. Please select a number between 1 and 7.")
 
 main()
-6
+
