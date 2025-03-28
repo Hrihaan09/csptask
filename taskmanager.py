@@ -3,6 +3,11 @@ from datetime import datetime
 tasks = []
 
 def add_task(task_name, priority, due_date):
+    try:
+        datetime.strptime(due_date, "%m-%d-%Y")
+    except ValueError:
+        print("Invalid date format. Please use mm-dd-yyyy.")
+        return
     task = {
         "task_name": task_name,
         "priority": priority,
@@ -24,7 +29,7 @@ def view_tasks():
     if not tasks:
         print("No tasks available.")
         return
-    sorted_tasks = sorted(tasks, key=lambda x: (x['priority'], x['due_date']))
+    sorted_tasks = sorted(tasks, key=lambda x: ({"high": 0, "medium": 1, "low": 2}[x['priority']], x['due_date']))
     print("\nTo-Do List:")
     for task in sorted_tasks:
         status = "Completed" if task['status'] else "Pending"
@@ -65,8 +70,22 @@ def main():
         
         if choice == "1":
             task_name = input("Enter task name: ")
-            priority = input("Enter task priority (high, medium, low): ")
-            due_date = input("Enter task due date (mm-dd-yyyy): ")
+    
+            while True:
+                priority = input("Enter task priority (high, medium, low): ").lower()
+                if priority in ['high', 'medium', 'low']:
+                    break
+                else:
+                    print('Please enter a valid priority level (high, medium, low).')
+
+            while True:
+                due_date = input("Enter task due date (mm-dd-yyyy): ")
+                try:
+                    valid_date = datetime.strptime(due_date, "%m-%d-%Y")
+                    break  
+                except ValueError:
+                    print("Invalid date format. Please enter the date in mm-dd-yyyy format.")
+    
             add_task(task_name, priority, due_date)
         
         elif choice == "2":
